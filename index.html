@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>한 줄 메모장</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#4CAF50">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <style>
+    body { font-family: sans-serif; padding: 20px; max-width: 400px; margin: 0 auto; }
+    .input-group { display: flex; gap: 8px; margin-top: 15px; }
+    input { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
+    button { padding: 10px 16px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    button:disabled { background-color: #ccc; }
+    #status { margin-top: 10px; font-size: 13px; color: #666; }
+  </style>
+</head>
+<body>
+  <h3>📝 나만의 한 줄 메모장 (PWA)</h3>
+  <div class="input-group">
+    <input type="text" id="memoInput" placeholder="메모할 내용을 입력하세요">
+    <button id="sendBtn" onclick="sendMemo()">전송</button>
+  </div>
+  <div id="status"></div>
+
+  <script>
+    // 1. 서비스 워커 등록
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js')
+        .then(() => console.log('Service Worker Registered'));
+    }
+
+    // 2. 구글 앱 스크립트 웹 앱 URL 붙여넣기
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbwRmb8jA7PumI7BmG8ZgDsilLjKS67mmmVyBX5A9BYzKFs84QYR4FQUkJRR3YGfnazNbQ/exec";
+
+    async function sendMemo() {
+      const input = document.getElementById('memoInput');
+      const btn = document.getElementById('sendBtn');
+      const status = document.getElementById('status');
+      const text = input.value.trim();
+
+      if (!text) return alert('내용을 입력하세요.');
+
+      btn.disabled = true;
